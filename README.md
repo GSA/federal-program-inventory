@@ -1,10 +1,38 @@
-# Federal Program Inventory
+# Federal Program Inventory (Pipeline)
 
-## About the inventory
-The [Federal Program Inventory (FPI)](https://fpi.omb.gov/) is a comprehensive, searchable tool with critical information about all Federal programs that provide grants, loans, or direct payments to individuals, governments, firms or other organizations. The FPI increases government transparency and accessibility and fulfills Congressional mandates to the Office of Management and Budget (OMB) to create and publicly post an inventory.
+## Overview
+The [Federal Program Inventory (FPI)](https://fpi.omb.gov/) is a comprehensive tool with information about Federal programs.
 
-## About the repository
-This repository contains four main sub-directories: (1) [api](api), which contains code for the API that exposes the FPI's elasticsearch instance; (2) [data_processing](data_processing), which contains code for the extract, transform, and load process that gathers and processes the underlying data for the FPI; (3) [indexer](indexer), which contains code to add programs to the FPI's elasticsearch index upon launch; and (4) [website](website), which contains code to build the public-facing FPI website. See the README.md files in each of these directories for more information.
+**This repository has been refactored to serve exclusively as the data pipeline for the FPI.**
+It extracts data from the underlying SQLite database, transforms it, and exports it as static JSON files.
 
-## The build process
-The various images that are deployed to run the FPI are generated using Github Actions. The scripts to do so are found in the [.github/workflows](.github/workflows) sub-directory. Github Actions will build three images (website, api, and indexer) upon commit to any of the `[stage]-release` branches. Deployment of these images must then be manually triggered / confirmed on internal systems to deploy the images to the respective environments.
+## Architecture Changes
+This project was previously a monolithic repository containing a Jekyll website, an Elasticsearch indexer, and an API.
+It has been stripped down to its core purpose: **Data Generation**.
+
+### Why the change?
+1.  **Separation of Concerns**: The data generation logic is now completely decoupled from the presentation layer.
+2.  **Modernization**: We switched from generating Markdown files (for Jekyll) to **JSON** files.
+    *   **Markdown (Old)**: Stored data as JSON strings inside YAML frontmatter. This was inefficient and tied to Jekyll.
+    *   **JSON (New)**: Raw, clean data that can be easily consumed by any modern frontend (React, Vue, etc.) or static site generator.
+3.  **Simplicity**: All legacy code (`website`, `indexer`, `api`) has been removed to reduce noise and maintenance burden.
+
+## Project Structure
+*   `pipeline/`: Contains the Python scripts for Extract, Transform, and Load (ETL).
+    *   `load.py`: Core logic for generating program data.
+    *   `export_data.py`: The main entry point that orchestrates the export.
+*   `data/`: The output directory where generated JSON files are stored.
+*   `package.json`: Manages build scripts.
+
+## How to Run
+To regenerate the data:
+
+```bash
+npm run build:data
+```
+
+This command runs the Python pipeline and populates the `data/` directory with:
+*   `programs.json`: A summary list of all programs.
+*   `programs/{id}.json`: Detailed data for each individual program.
+*   `filters.json`: Shared data for filtering (agencies, categories, etc.).
+*   `metadata.json`: Build timestamp and fiscal year information.

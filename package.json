@@ -1,0 +1,10 @@
+{
+    "name": "federal-program-inventory-root",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build:data": "python3 pipeline/export_data.py",
+        "build": "npm run build:data"
+    },
+    "workspaces": []
+}
