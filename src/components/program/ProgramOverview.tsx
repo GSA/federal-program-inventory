@@ -68,6 +68,8 @@ export function ProgramOverview({ objective, obligations = [], categories = [], 
 
     const latestExpenditure = chartData.length > 0 ? chartData[chartData.length - 1] : null;
 
+    const hasPurpose = !!(gwo || (pons && pons.length > 0));
+
     return (
         <div className="">
             {/* Summary Section */}
@@ -91,53 +93,53 @@ export function ProgramOverview({ objective, obligations = [], categories = [], 
 
             <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-0 gap-12">
                 {/* Purpose Section */}
-                <section className="space-y-6 lg:pr-5 lg:col-span-5 relative h-full pb-11">
-                    {/* Vertical Divider for Desktop */}
-                    <div className="hidden lg:block absolute h-full right-0 top-[2.25px] bottom-0 w-[1px] border-r-dashed-custom" />
+                {hasPurpose && (
+                    <section className="space-y-6 lg:pr-5 lg:col-span-5 relative h-full pb-11">
+                        {/* Vertical Divider for Desktop */}
+                        <div className="hidden lg:block absolute h-full right-0 top-[2.25px] bottom-0 w-[1px] border-r-dashed-custom" />
 
-                    <div className="flex items-center justify-between mt-5">
-                        <h2 className="text-lg text-foreground font-semibold">Purpose</h2>
-                        <a href="#" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                            <span className="underline">View results</span>
-                            <ArrowRight className="h-4 w-4" />
-                        </a>
-                    </div>
+                        <div className="flex items-center justify-between mt-5">
+                            <h2 className="text-lg text-foreground font-semibold">Purpose</h2>
+                            <a href="#" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <span className="underline">View results</span>
+                                <ArrowRight className="h-4 w-4" />
+                            </a>
+                        </div>
 
-                    <div className="space-y-4">
-                        {gwo && (
-                            <div>
-                                <h3 className="text-xs font-medium mb-3">Objective</h3>
-                                {/* Debug log to check GWO data */}
-                                {console.log('ProgramOverview GWO:', gwo)}
-                                <NavigationCard
-                                    title={gwo.name || gwo.gwo || "Government Wide Objective"}
-                                    count={gwoCount}
-                                    Icon={Goal}
-                                    href={gwo.permalink || `/objective/${gwo.id}`}
-                                />
-                            </div>
-                        )}
-                        {pons && pons.length > 0 && (
-                            <div>
-                                <h3 className="text-xs font-medium mb-3">Outcomes</h3>
-                                <div className="space-y-2">
-                                    {pons.map((pon, index) => (
-                                        <NavigationCard
-                                            key={index}
-                                            title={pon.pon || pon.title}
-                                            count={0}
-                                            Icon={Target}
-                                            href={pon.permalink || "#"}
-                                        />
-                                    ))}
+                        <div className="space-y-4">
+                            {gwo && (
+                                <div>
+                                    <h3 className="text-xs font-medium mb-3">Objective</h3>
+                                    <NavigationCard
+                                        title={gwo.name || gwo.gwo || "Government Wide Objective"}
+                                        count={gwoCount}
+                                        Icon={Goal}
+                                        href={gwo.permalink || `/objective/${gwo.id}`}
+                                    />
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                </section>
+                            )}
+                            {pons && pons.length > 0 && (
+                                <div>
+                                    <h3 className="text-xs font-medium mb-3">Outcomes</h3>
+                                    <div className="space-y-2">
+                                        {pons.map((pon, index) => (
+                                            <NavigationCard
+                                                key={index}
+                                                title={pon.pon || pon.title}
+                                                count={0}
+                                                Icon={Target}
+                                                href={pon.permalink || "#"}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                )}
 
                 {/* Expenditures Section */}
-                <section className="flex flex-col space-y-6 lg:pl-5 h-full lg:col-span-7 pb-11">
+                <section className={`flex flex-col space-y-6 ${hasPurpose ? 'lg:pl-5' : ''} h-full lg:col-span-7 pb-11`}>
                     <div className="flex items-center justify-between mt-5">
                         <h2 className="text-lg text-foreground font-semibold">Expenditures</h2>
                         <a href="#" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
