@@ -15,6 +15,9 @@ interface ProgramOverviewProps {
     objective: string;
     obligations: Obligation[];
     categories?: string[];
+    gwo?: any;
+    gwoCount?: number;
+    pons?: any[];
 }
 
 interface NavigationCardProps {
@@ -40,7 +43,7 @@ function NavigationCard({ title, count, Icon, href = "#" }: NavigationCardProps)
     );
 }
 
-export function ProgramOverview({ objective, obligations = [], categories = [] }: ProgramOverviewProps) {
+export function ProgramOverview({ objective, obligations = [], categories = [], gwo, gwoCount = 0, pons = [] }: ProgramOverviewProps) {
     // Process data for the chart
     // Filter for recent years (e.g., last 3 years + next year)
     const currentYear = new Date().getFullYear();
@@ -101,36 +104,35 @@ export function ProgramOverview({ objective, obligations = [], categories = [] }
                     </div>
 
                     <div className="space-y-4">
-                        <div>
-                            <h3 className="text-xs font-medium mb-3">Objective</h3>
-                            <NavigationCard
-                                title="Sustain Public Roadway System"
-                                count={32}
-                                Icon={Goal}
-                                href="/objective/sustain-public-roadway-system/"
-                            />
-                        </div>
-
-                        <div>
-                            <h3 className="text-xs font-medium mb-3">Outcomes</h3>
-                            <div className="space-y-2">
+                        {gwo && (
+                            <div>
+                                <h3 className="text-xs font-medium mb-3">Objective</h3>
+                                {/* Debug log to check GWO data */}
+                                {console.log('ProgramOverview GWO:', gwo)}
                                 <NavigationCard
-                                    title="Quis autem vel eum iur reprehenderit"
-                                    count={12}
-                                    Icon={Target}
-                                />
-                                <NavigationCard
-                                    title="Et harum quidem rerum facilis"
-                                    count={16}
-                                    Icon={Target}
-                                />
-                                <NavigationCard
-                                    title="Et harum quidem rerum facilis"
-                                    count={16}
-                                    Icon={Target}
+                                    title={gwo.name || gwo.gwo || "Government Wide Objective"}
+                                    count={gwoCount}
+                                    Icon={Goal}
+                                    href={gwo.permalink || `/objective/${gwo.id}`}
                                 />
                             </div>
-                        </div>
+                        )}
+                        {pons && pons.length > 0 && (
+                            <div>
+                                <h3 className="text-xs font-medium mb-3">Outcomes</h3>
+                                <div className="space-y-2">
+                                    {pons.map((pon, index) => (
+                                        <NavigationCard
+                                            key={index}
+                                            title={pon.pon || pon.title}
+                                            count={0}
+                                            Icon={Target}
+                                            href={pon.permalink || "#"}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </section>
 

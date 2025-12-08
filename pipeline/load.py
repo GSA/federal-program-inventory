@@ -931,8 +931,10 @@ def generate_program_data(cursor: sqlite3.Cursor, fiscal_years: list[str]) -> Li
         if gwo_row is not None:
             url_friendly_id = gwo_row['id'].replace('#','_')
             gwo = {
-                'gwo': gwo_row['gwo'],
-                'permalink': f"/gwo/{url_friendly_id}"
+                'id': gwo_row['id'],
+                'name': gwo_row['gwo'],
+                'gwo': gwo_row['gwo'], # Keep for backward compatibility if needed
+                'permalink': f"/gwo/{url_friendly_id}/"
             }
 
         # Get program outcomes

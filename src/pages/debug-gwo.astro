@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+import programsSummary from "../../data/programs.json";
+
+const gwoCounts = {};
+programsSummary.forEach((p) => {
+    if (p.gwo && p.gwo.id) {
+        gwoCounts[p.gwo.id] = (gwoCounts[p.gwo.id] || 0) + 1;
+    }
+});
+
+const gwos = Object.keys(gwoCounts).map((id) => ({
+    id,
+    count: gwoCounts[id],
+    example: programsSummary.find((p) => p.gwo && p.gwo.id === id)?.gwo,
+}));
+---
+
+<Layout title="Debug GWO">
+    <main class="p-10">
+        <h1 class="text-2xl font-bold mb-4">Debug GWO Data</h1>
+        <p class="mb-4">Total Programs: {programsSummary.length}</p>
+        <p class="mb-4">Total GWOs: {gwos.length}</p>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Count</th>
+                    <th class="border p-2">Name</th>
+                    <th class="border p-2">Permalink</th>
+                    <th class="border p-2">Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    gwos.map((gwo) => (
+                        <tr class="border">
+                            <td class="border p-2">{gwo.id}</td>
+                            <td class="border p-2">{gwo.count}</td>
+                            <td class="border p-2">{gwo.example.name}</td>
+                            <td class="border p-2">{gwo.example.permalink}</td>
+                            <td class="border p-2">
+                                <a
+                                    href={`/gwo/${gwo.id}/`}
+                                    class="text-blue-600 underline"
+                                >
+                                    Visit
+                                </a>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </main>
+</Layout>

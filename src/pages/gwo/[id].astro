@@ -4,12 +4,28 @@ import { getObjectiveData } from "../../utils/objectiveData";
 import { ObjectiveHeader } from "../../components/objective/ObjectiveHeader";
 import { ObjectiveTabs } from "../../components/objective/ObjectiveTabs";
 
+import programsSummary from "../../../data/programs.json";
+
 export async function getStaticPaths() {
-    // Only generating for the specific objective requested for now
-    return [{ params: { id: "sustain-public-roadway-system" } }];
+    // Get all unique GWO IDs from programs
+    const gwoIds = new Set(
+        programsSummary.filter((p) => p.gwo && p.gwo.id).map((p) => p.gwo.id),
+    );
+
+    const paths = Array.from(gwoIds).map((id) => ({
+        params: { id },
+    }));
+
+    // Add the hardcoded example if not present
+    if (!gwoIds.has("sustain-public-roadway-system")) {
+        paths.push({ params: { id: "sustain-public-roadway-system" } });
+    }
+
+    return paths;
 }
 
 const { id } = Astro.params;
+console.log("Objective Page ID:", id);
 const objectiveData = getObjectiveData(id);
 
 if (!objectiveData) {

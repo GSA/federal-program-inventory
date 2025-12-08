@@ -18,13 +18,30 @@ const { id } = Astro.props;
 const dataPath = path.join(process.cwd(), "data", "programs", `${id}.json`);
 const program = JSON.parse(await fs.readFile(dataPath, "utf-8"));
 
+// Map data fields to component props
+const title = program.name || program.title;
+const agency = program.top_agency_name || program.agency;
+const subAgency = program.sub_agency_name || program.sub_agency;
+const obligations = (program.obligations || []).map((o: any) => ({
+  ...o,
+  fiscal_year: o.fiscal_year || parseInt(o.x),
+}));
+const gwo = program.gwo;
+
+// Calculate GWO count
+const gwoCount =
+  gwo && gwo.id
+    ? programsSummary.filter((p) => p.gwo && p.gwo.id === gwo.id && p.id !== id)
+        .length
+    : 0;
+
 // Mock data for missing fields if necessary
 const assistanceTypes = program.assistance_types || [];
 const beneficiaryTypes = program.beneficiary_types || [];
 const applicantTypes = program.applicant_types || [];
 ---
 
-<Layout title={`${program.title} | Federal Program Inventory`}>
+<Layout title={`${title} | Federal Program Inventory`}>
   <main class="px-4 sm:px-6 lg:px-8 pb-8">
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-0">
       {/* Main Content */}
@@ -32,9 +49,9 @@ const applicantTypes = program.applicant_types || [];
         <div class="w-full max-w-6xl mx-auto">
           <ProgramHeader
             client:load
-            agency={program.agency}
-            subAgency={program.sub_agency}
-            title={program.title}
+            agency={agency}
+            subAgency={subAgency}
+            title={title}
             popularName={program.popular_name}
             id={program.id}
           />
@@ -44,8 +61,11 @@ const applicantTypes = program.applicant_types || [];
           <ProgramTabs
             client:load
             objective={program.objective}
-            obligations={program.obligations}
+            obligations={obligations}
             categories={program.categories}
+            gwo={gwo}
+            gwoCount={gwoCount}
+            pons={program.pons}
           />
         </div>
       </div>

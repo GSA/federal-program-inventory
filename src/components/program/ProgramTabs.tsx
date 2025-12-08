@@ -8,18 +8,21 @@ import { ProgramOversight } from './ProgramOversight';
 
 interface Obligation {
     fiscal_year: number;
-    sam_estimate?: number | null;
-    sam_actual?: number | null;
-    usa_spending_actual?: number | null;
+    sam_estimate: number | null;
+    sam_actual: number | null;
+    usa_spending_actual: number | null;
 }
 
 interface ProgramTabsProps {
     objective: string;
     obligations: Obligation[];
     categories: string[];
+    gwo?: any;
+    gwoCount?: number;
+    pons?: any[];
 }
 
-export function ProgramTabs({ objective, obligations, categories }: ProgramTabsProps) {
+export function ProgramTabs({ objective, obligations, categories, gwo, gwoCount, pons }: ProgramTabsProps) {
     return (
         <Tabs defaultValue="overview" className="w-full">
             <div className="relative mb-8">
@@ -65,6 +68,9 @@ export function ProgramTabs({ objective, obligations, categories }: ProgramTabsP
                     objective={objective}
                     obligations={obligations}
                     categories={categories}
+                    gwo={gwo}
+                    gwoCount={gwoCount}
+                    pons={pons}
                 />
             </TabsContent>
             <TabsContent value="spending" className="mt-0">

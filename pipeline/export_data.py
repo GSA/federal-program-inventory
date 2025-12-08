@@ -37,8 +37,8 @@ def main():
         
         # Save individual program files
         print(f"Saving {len(programs_data)} individual program files...")
-        # for program in programs_data:
-        #     save_json(program, f"programs/{program['id']}.json")
+        for program in programs_data:
+            save_json(program, f"programs/{program['id']}.json")
 
         # Save all programs summary list (for search/listing)
         # We'll strip down the data to just what's needed for the list view to keep file size down
@@ -52,7 +52,10 @@ def main():
                 'popular_name': p['popular_name'],
                 'applicant_types': p['applicant_types'],
                 'assistance_types': p['assistance_types'],
-                'categories': p['categories']
+                'applicant_types': p['applicant_types'],
+                'assistance_types': p['assistance_types'],
+                'categories': p['categories'],
+                'gwo': p['gwo']
             })
         save_json(programs_summary, "programs.json")
 
