@@ -1,0 +1,68 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { ProgramHeader } from "../../components/program/ProgramHeader";
+import { ProgramSidebar } from "../../components/program/ProgramSidebar";
+import { ProgramTabs } from "../../components/program/ProgramTabs";
+import programsSummary from "../../../data/programs.json";
+import fs from "node:fs/promises";
+import path from "node:path";
+
+export async function getStaticPaths() {
+  return programsSummary.map((program) => ({
+    params: { id: program.id },
+    props: { id: program.id },
+  }));
+}
+
+const { id } = Astro.props;
+const dataPath = path.join(process.cwd(), "data", "programs", `${id}.json`);
+const program = JSON.parse(await fs.readFile(dataPath, "utf-8"));
+
+// Mock data for missing fields if necessary
+const assistanceTypes = program.assistance_types || [];
+const beneficiaryTypes = program.beneficiary_types || [];
+const applicantTypes = program.applicant_types || [];
+---
+
+<Layout title={`${program.title} | Federal Program Inventory`}>
+  <main class="px-4 sm:px-6 lg:px-8 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-0">
+      {/* Main Content */}
+      <div class="md:pr-6 py-10">
+        <div class="w-full max-w-6xl mx-auto">
+          <ProgramHeader
+            client:load
+            agency={program.agency}
+            subAgency={program.sub_agency}
+            title={program.title}
+            popularName={program.popular_name}
+            id={program.id}
+          />
+
+          <div class="border-t border-parchment-500 mt-5"></div>
+
+          <ProgramTabs
+            client:load
+            objective={program.objective}
+            obligations={program.obligations}
+            categories={program.categories}
+          />
+        </div>
+      </div>
+
+      {/* Sidebar - Sticky on desktop */}
+      <div class="flex flex-col items-end">
+        <div
+          class="sticky top-8 w-full max-w-[264px] border-l border-parchment-250 pl-2 min-h-full"
+        >
+          <ProgramSidebar
+            client:load
+            assistanceTypes={assistanceTypes}
+            beneficiaryTypes={beneficiaryTypes}
+            applicantTypes={applicantTypes}
+          />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

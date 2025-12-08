@@ -37,8 +37,8 @@ def main():
         
         # Save individual program files
         print(f"Saving {len(programs_data)} individual program files...")
-        for program in programs_data:
-            save_json(program, f"programs/{program['id']}.json")
+        # for program in programs_data:
+        #     save_json(program, f"programs/{program['id']}.json")
 
         # Save all programs summary list (for search/listing)
         # We'll strip down the data to just what's needed for the list view to keep file size down
@@ -48,11 +48,26 @@ def main():
                 'id': p['id'],
                 'title': p['name'],
                 'agency': p['top_agency_name'],
+                'sub_agency': p['sub_agency_name'],
+                'popular_name': p['popular_name'],
                 'applicant_types': p['applicant_types'],
                 'assistance_types': p['assistance_types'],
                 'categories': p['categories']
             })
         save_json(programs_summary, "programs.json")
+
+        # 1b. Generate Agencies Data (with counts)
+        print("Generating agencies data...")
+        agency_counts = {}
+        for p in programs_data:
+            agency_name = p['top_agency_name']
+            if agency_name:
+                if agency_name not in agency_counts:
+                    agency_counts[agency_name] = {'name': agency_name, 'program_count_rollup': 0}
+                agency_counts[agency_name]['program_count_rollup'] += 1
+        
+        agencies_list = sorted(list(agency_counts.values()), key=lambda x: x['name'])
+        save_json(agencies_list, "agencies.json")
 
         # 2. Generate Shared Data (Filters, etc.)
         print("Generating shared data...")

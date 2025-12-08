@@ -1,0 +1,19 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { AgenciesList } from "../../components/agency/AgenciesList";
+import agenciesData from "../../../data/agencies.json";
+
+// Filter to top-level agencies or relevant ones if needed.
+// For now, passing all, but usually we might want just top tier (tier 1 or 2).
+// Looking at data, tier 2 seems to be the main departments.
+// Let's pass all for now and let the component handle or just filter to tier 2 if needed.
+// Actually, let's filter to unique names or just pass all.
+// The JSON has a lot of entries. Let's filter to those with programs > 0 to be useful.
+const agencies = agenciesData.filter((a) => a.program_count_rollup > 0);
+---
+
+<Layout title="Federal Agencies | Federal Program Inventory">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <AgenciesList client:load agencies={agencies} />
+  </main>
+</Layout>

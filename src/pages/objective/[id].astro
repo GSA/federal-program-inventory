@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getObjectiveData } from "../../utils/objectiveData";
+import { ObjectiveHeader } from "../../components/objective/ObjectiveHeader";
+import { ObjectiveTabs } from "../../components/objective/ObjectiveTabs";
+
+export async function getStaticPaths() {
+    // Only generating for the specific objective requested for now
+    return [{ params: { id: "sustain-public-roadway-system" } }];
+}
+
+const { id } = Astro.params;
+const objectiveData = getObjectiveData(id);
+
+if (!objectiveData) {
+    return Astro.redirect("/404");
+}
+---
+
+<Layout title={`${objectiveData.title} | Federal Program Inventory`}>
+    <main class="px-4 sm:px-6 lg:px-8 pb-16 pt-10">
+        <div class="max-w-7xl mx-auto">
+            <ObjectiveHeader
+                client:load
+                title={objectiveData.title}
+                description={objectiveData.description}
+                updated={objectiveData.updated}
+                tags={objectiveData.tags}
+            />
+
+            <div class="border-t border-parchment-500 mt-5"></div>
+
+            <ObjectiveTabs
+                client:load
+                programs={objectiveData.programs}
+                totalExpenditure={objectiveData.totalExpenditure}
+                lastUpdated={objectiveData.updated}
+            />
+        </div>
+    </main>
+</Layout>

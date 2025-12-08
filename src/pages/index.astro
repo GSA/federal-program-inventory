@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ProgramDiscovery } from '../components/program/ProgramDiscovery';
+import programsData from '../../data/programs.json';
+
+// Pass the data to the client component
+// Map to a lighter structure to avoid sending 8MB to the client
+const programs = programsData.map(p => ({
+  id: p.id,
+  name: p.title,
+  agency: p.agency,
+  sub_agency: p.sub_agency,
+  al_number: p.id,
+  popular_name: p.popular_name,
+  categories: p.categories || [],
+  applicant_types: p.applicant_types || []
+}));
+---
+
+<Layout title="Federal Program Inventory">
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <ProgramDiscovery client:load programs={programs} />
+  </main>
+</Layout>
