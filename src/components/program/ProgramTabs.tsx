@@ -20,9 +20,15 @@ interface ProgramTabsProps {
     gwo?: any;
     gwoCount?: number;
     pons?: any[];
+    results?: { year: string; description: string }[];
+    rulesRegulations?: string;
+    authorizations?: { text: string; url: string }[];
+    isSubpartF?: number;
+    gaoReports?: any[];
+    outlays?: any[];
 }
 
-export function ProgramTabs({ objective, obligations, categories, gwo, gwoCount, pons }: ProgramTabsProps) {
+export function ProgramTabs({ objective, obligations, categories, gwo, gwoCount, pons, results, rulesRegulations, authorizations, isSubpartF, gaoReports, outlays }: ProgramTabsProps) {
     return (
         <Tabs defaultValue="overview" className="w-full">
             <div className="relative mb-8">
@@ -74,16 +80,16 @@ export function ProgramTabs({ objective, obligations, categories, gwo, gwoCount,
                 />
             </TabsContent>
             <TabsContent value="spending" className="mt-0">
-                <ProgramSpending obligations={obligations} />
+                <ProgramSpending obligations={obligations} outlays={outlays} />
             </TabsContent>
             <TabsContent value="results" className="mt-0">
-                <ProgramResults />
+                <ProgramResults results={results} />
             </TabsContent>
             <TabsContent value="policies" className="mt-0">
-                <ProgramPolicies />
+                <ProgramPolicies rulesRegulations={rulesRegulations} authorizations={authorizations} />
             </TabsContent>
             <TabsContent value="oversight" className="mt-0">
-                <ProgramOversight />
+                <ProgramOversight isSubpartF={isSubpartF} gaoReports={gaoReports} />
             </TabsContent>
         </Tabs>
     );

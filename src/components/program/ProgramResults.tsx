@@ -1,7 +1,37 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 
-export function ProgramResults() {
+interface Result {
+    year: string;
+    description: string;
+}
+
+interface ProgramResultsProps {
+    results?: Result[];
+}
+
+export function ProgramResults({ results }: ProgramResultsProps) {
+    if (results && results.length > 0) {
+        return (
+            <div className="space-y-8">
+                <h2 className="text-2xl font-serif font-medium text-foreground">Program Results</h2>
+                <div className="space-y-8">
+                    {results.map((result, index) => (
+                        <div key={index} className="flex flex-col gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="h-8 w-8 rounded-full border-2 border-foreground flex-shrink-0" />
+                                <span className="text-3xl font-bold text-foreground">{result.year}</span>
+                            </div>
+                            <p className="text-base leading-relaxed text-foreground/90 max-w-4xl">
+                                {result.description}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-8">
             <h2 className="text-2xl font-serif font-medium text-foreground">Program Results</h2>

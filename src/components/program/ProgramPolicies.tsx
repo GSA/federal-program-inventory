@@ -1,7 +1,58 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
+import { ExternalLink } from "lucide-react";
 
-export function ProgramPolicies() {
+interface Authorization {
+    text: string;
+    url: string;
+}
+
+interface ProgramPoliciesProps {
+    rulesRegulations?: string;
+    authorizations?: Authorization[];
+}
+
+export function ProgramPolicies({ rulesRegulations, authorizations }: ProgramPoliciesProps) {
+    const hasData = rulesRegulations || (authorizations && authorizations.length > 0);
+
+    if (hasData) {
+        return (
+            <div className="space-y-12">
+                {rulesRegulations && (
+                    <div className="space-y-6">
+                        <div className="bg-sky-100 p-4 -mx-4 sm:mx-0 sm:rounded-sm">
+                            <h2 className="text-xl font-bold text-foreground">Associated rules and regulations</h2>
+                        </div>
+                        <p className="text-lg text-foreground pl-2">{rulesRegulations}</p>
+                    </div>
+                )}
+
+                {authorizations && authorizations.length > 0 && (
+                    <div className="space-y-6">
+                        <div className="bg-sky-100 p-4 -mx-4 sm:mx-0 sm:rounded-sm">
+                            <h2 className="text-xl font-bold text-foreground">Authorizing statutes</h2>
+                        </div>
+                        <ol className="list-decimal list-inside space-y-4 pl-2">
+                            {authorizations.map((auth, index) => (
+                                <li key={index} className="text-lg">
+                                    <a
+                                        href={auth.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline inline-flex items-center gap-1"
+                                    >
+                                        <span dangerouslySetInnerHTML={{ __html: auth.text }} />
+                                        <ExternalLink className="h-4 w-4" />
+                                    </a>
+                                </li>
+                            ))}
+                        </ol>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-8">
             <h2 className="text-2xl font-serif font-medium text-foreground">Policies & Regulations</h2>

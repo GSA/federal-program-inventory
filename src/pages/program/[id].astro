@@ -27,6 +27,12 @@ const obligations = (program.obligations || []).map((o: any) => ({
   fiscal_year: o.fiscal_year || parseInt(o.x),
 }));
 const gwo = program.gwo;
+const results = program.results;
+const rulesRegulations = program.rules_regulations;
+const authorizations = program.authorizations;
+const isSubpartF = program.is_subpart_f;
+const gaoReports = program.gao_reports; // Assuming this field might exist or will be null
+const outlays = program.outlays;
 
 // Calculate GWO count
 const gwoCount =
@@ -66,6 +72,12 @@ const applicantTypes = program.applicant_types || [];
             gwo={gwo}
             gwoCount={gwoCount}
             pons={program.pons}
+            results={results}
+            rulesRegulations={rulesRegulations}
+            authorizations={authorizations}
+            isSubpartF={isSubpartF}
+            gaoReports={gaoReports}
+            outlays={outlays}
           />
         </div>
       </div>
